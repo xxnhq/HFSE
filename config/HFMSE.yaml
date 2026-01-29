@@ -1,0 +1,48 @@
+hydra:
+  run:
+    dir: hydra/${model.name}
+
+datasets:
+  name:  # dataset name
+    - Mix
+  batch_size_per_gpu: 5120
+  batch_size_type: frame
+  max_samples: 32
+  num_workers: 32
+
+optim:
+  epochs: 50
+  learning_rate: 7.5e-5
+  num_warmup_updates: 20000
+  grad_accumulation_steps: 1
+  max_grad_norm: 1.0
+  bnb_optimizer: False
+
+model:
+  name: HFMSE
+  backbone: DiT
+  arch:
+    dim: 1024
+    depth: 22
+    heads: 16
+    ff_mult: 2
+    qk_norm: null  # null | rms_norm
+    pe_attn_head: null
+    checkpoint_activations: False  # recompute activations and save memory for extra compute
+  mel_spec:
+    target_sample_rate: 24000
+    n_mel_channels: 100
+    hop_length: 256
+    win_length: 1024
+    n_fft: 1024
+    mel_spec_type: bigvgan
+  vocoder:
+    is_local: True  # use local offline ckpt or not
+    local_path: /data2/checkpoints/bigvgan24k  # local vocoder path
+
+ckpts:
+  log_samples: True  # infer random sample per save checkpoint. wip, normal to fail with extra long samples
+  log_sample_rate: 24000
+  save_per_updates: 10000  # save checkpoint per updates
+  keep_last_n_checkpoints: -1  # -1 to keep all, 0 to not save intermediate, > 0 to keep last N checkpoints
+  last_per_updates: 10000  # save last checkpoint per updates
