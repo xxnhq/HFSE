@@ -190,7 +190,6 @@ class CFM(nn.Module):
             *,
             Q,
             lens,
-            noise_scheduler,
     ):
         # handle raw wave
         if inp.ndim == 2:
