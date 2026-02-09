@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 from model.cfm import CFM
 from model.dataset import DynamicBatchSampler, collate_fn
-from model.utils import default, exists
+from model.cfm import default, exists
 from pathlib import Path
 from model.modules import MelSpec
 from model.eval import eval_dnsmos
