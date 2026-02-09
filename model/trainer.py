@@ -341,7 +341,7 @@ class Trainer:
                     Q = batch["Q"]
 
                     loss, cond, pred = self.model(
-                        mel_spec, noisy_mel_spec, inp=noisy_mel_spec, lens=mel_lengths, Q=Q
+                        mel_spec, noisy_mel_spec, harmonic_inp=noisy_mel_spec, lens=mel_lengths, Q=Q
                     ) 
                     self.accelerator.backward(loss)
 
