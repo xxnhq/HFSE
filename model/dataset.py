@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, Sampler, DataLoader, SequentialSampler
 from tqdm import tqdm
 import random
 from model.modules import MelSpec
-from model.utils import default
+from model.cfm import default
 import numpy as np
 import math
 import librosa
