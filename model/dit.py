@@ -128,7 +128,7 @@ class DiT(nn.Module):
         drop_noisy_audio_cond,
         drop_harmonic,
         Q,
-        mask,
+        mask=None,
         cache=False,
     ):
         batch, seq_len = x.shape[0], x.shape[1]
@@ -146,7 +146,7 @@ class DiT(nn.Module):
                     self.harmonic_cond = self.harmonic_embed(inp, seq_len, Q, drop_harmonic=False)
                 harmonic_embed = self.harmonic_cond
         else:
-            harmonic_embed = self.harmonic_embed(harmonic, seq_len, Q, drop_harmonic=drop_harmonic)
+            harmonic_embed = self.harmonic_embed(inp, seq_len, Q, drop_harmonic=drop_harmonic)
         x = self.input_embed(x, cond, cond_noisy, harmonic_embed, drop_audio_cond=drop_audio_cond, drop_noisy_audio_cond=drop_noisy_audio_cond)
 
         rope = self.rotary_embed.forward_from_seq_len(seq_len)
