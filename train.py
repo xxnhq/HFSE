@@ -17,7 +17,7 @@ def main(model_cfg):
     )
 
     # init trainer
-    trainer = Trainer_CFM(
+    trainer = Trainer(
         model,
         epochs=model_cfg.optim.epochs,
         learning_rate=model_cfg.optim.learning_rate,
