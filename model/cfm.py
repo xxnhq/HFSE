@@ -186,7 +186,7 @@ class CFM(nn.Module):
             self,
             inp,
             noisy_inp,
-            inp,
+            harmonic_inp,
             *,
             Q,
             lens,
@@ -240,7 +240,7 @@ class CFM(nn.Module):
             drop_harmonic = False
 
         pred = self.transformer(
-            x=φ, cond=cond, cond_noisy=noisy_inp, inp=inp, time=time, drop_audio_cond=drop_audio_cond,
+            x=φ, cond=cond, cond_noisy=noisy_inp, inp=harmonic_inp, time=time, drop_audio_cond=drop_audio_cond,
             drop_noisy_audio_cond=drop_noisy_audio_cond, drop_harmonic=drop_harmonic,
             Q=Q
         )
