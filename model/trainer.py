@@ -48,7 +48,7 @@ def parse_scp(scp_path: str, split_token: str = " "):
     return path_list
 
 
-def load_vocoder(vocoder_name="bigvgan", is_local=False, local_path="", device=device, hf_cache_dir=None):
+def load_vocoder(vocoder_name="bigvgan", is_local=False, local_path="", device=None, hf_cache_dir=None):
     if vocoder_name == "bigvgan":
         from model.vocoder.BigVGAN.bigvgan import BigVGAN
         if is_local:
