@@ -48,7 +48,7 @@ def parse_scp(scp_path: str, split_token: str = " "):
     return path_list
 
 
-def load_vocoder(vocoder_name="bigvgan", is_local=False, local_path="", device=None, hf_cache_dir=None):
+def load_vocoder(vocoder_name="bigvgan", is_local=False, local_path="", device='cuda', hf_cache_dir=None):
     if vocoder_name == "bigvgan":
         from model.vocoder.BigVGAN.bigvgan import BigVGAN
         if is_local:
@@ -415,9 +415,6 @@ class Trainer:
                             )
                         sig, bak, ovrl = eval_dnsmos(target_dir)
                         print(global_update, sig, bak, ovrl)
-                        adjust_gain(target_dir, target_dir, -25)
-                        sig, bak, ovrl = eval_dnsmos(target_dir)
-                        print(global_update, sig, bak, ovrl)
                         with open(f"{target_dir}/mos.txt", 'w') as f:
                             f.write(f"sig: {sig}, bak: {bak}, ovrl: {ovrl}")
 
@@ -449,9 +446,6 @@ class Trainer:
                             torchaudio.save(
                                 f"{rev_target_dir}/{name}.wav", self._resampler(gen_audio_noref), 16000
                             )
-                        sig, bak, ovrl = eval_dnsmos(rev_target_dir)
-                        print(global_update, sig, bak, ovrl)
-                        adjust_gain(rev_target_dir, rev_target_dir, -25)
                         sig, bak, ovrl = eval_dnsmos(rev_target_dir)
                         print(global_update, sig, bak, ovrl)
                         with open(f"{rev_target_dir}/mos.txt", 'w') as f:
