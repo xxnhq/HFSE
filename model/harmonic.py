@@ -3,6 +3,35 @@ import torch.nn as nn
 import torch.nn.functional as Fn
 
 
+class ChannelAttention(nn.Module):
+    def __init__(self, num_feat, squeeze_factor=16):
+        super(ChannelAttention, self).__init__()
+        self.attention = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(num_feat, num_feat // squeeze_factor, 1, padding=0),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(num_feat // squeeze_factor, 1, 1, padding=0),
+            nn.Sigmoid())
+        self.point_conv = nn.conv2d(num_feat, num_feat, 1)
+
+    def forward(self, x):
+        y = self.attention(x)
+        x = self.point_conv(x)
+        return x * y
+
+
+class CAB(nn.Module):
+    def __init__(self, num_feat, squeeze_factor=16):
+        super(CAB, self).__init__()
+        # we use depth-wise conv for light-SR to achieve more efficient
+        self.cab = nn.Sequential(
+            nn.Conv2d(num_feat, num_feat, kernel_size=(1, 3), stride=(1, 1), padding=(0, 1), groups=num_feat),
+            ChannelAttention(num_feat, squeeze_factor)
+        )
+
+    def forward(self, x):
+        return self.cab(x)
+
 class HarmonicIntegration(nn.Module):
     def __init__(self, in_channels, heads=4, head_dim=None):
         super().__init__()
@@ -63,7 +92,7 @@ class HarmonicAttention(nn.Module):
             nn.PReLU()
         )
         self.hint = HarmonicIntegration(hidden_dim, heads=heads)
-
+        self.cab = CAB(hidden_dim)
         self.final_conv = nn.Conv2d(hidden_dim, channels, kernel_size=1)
 
     def forward(self, X, Q):
@@ -73,7 +102,8 @@ class HarmonicAttention(nn.Module):
         out = self.conv(X)
 
         h_out = self.hint(out, Q=Q)
-
+        h_out = self.cab(h_out)
         out_final = self.final_conv(h_out).squeeze(1)
 
         return out_final
+
